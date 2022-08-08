@@ -4,6 +4,8 @@ The goal of this project is to visualize how different optimization algorithms b
 
 There are two main areas of focus: line search and trust-region methods. 
 
+The visualization tool can be found at [link](https://sachag678-optimization-ui-sv2xnb.streamlitapp.com/)
+
 ## Line Search Methods
 
 Search direction has been implemented with steepest descent and newton's method. The step size is calculated using a backtracking line search which satisfies the armijo conditions. 
