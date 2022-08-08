@@ -121,7 +121,7 @@ def steepest_descent(f, x0=1.2, y0=1.2, c=0.01, rho=0.75):
         px = -approx_deriv_x(f, x, y)
         py = -approx_deriv_y(f, x, y)
         step_size = backtracking_line_search(f, np.array([-px, -py]), px, py, x, y, c=c, rho=rho)
-        print('alpha: {}, p: ({}, {})'.format(step_size, px, py))
+        #print('alpha: {}, p: ({}, {})'.format(step_size, px, py))
         old_x = x
         old_y = y
         x += step_size * px
@@ -132,7 +132,7 @@ def steepest_descent(f, x0=1.2, y0=1.2, c=0.01, rho=0.75):
         if ((old_x - x)**2 + (old_y - y)**2)**0.5 < 0.0001:
             break
         count += 1
-    print('steepest_descent: ', x, y, count)
+    #print('steepest_descent: ', x, y, count)
     return xs, ys
 
 
@@ -163,7 +163,7 @@ def newtons_method(f, x0=1.2, y0=1.2, beta=0.001, multiple_identity=False, flip_
         px = p[0]
         py = p[1]
         step_size = backtracking_line_search(f, df, px, py, x, y, c=c, rho=rho)
-        print('alpha: {}, p: ({}, {})'.format(step_size, px, py))
+        #print('alpha: {}, p: ({}, {})'.format(step_size, px, py))
         old_x = x
         old_y = y
         x += step_size * px
@@ -175,7 +175,7 @@ def newtons_method(f, x0=1.2, y0=1.2, beta=0.001, multiple_identity=False, flip_
         if np.linalg.norm(df, 2) < 0.00001 or ((old_x - x)**2 + (old_y - y)**2)**0.5 < 0.0001:
             break
         count += 1
-    print('newtons method: ',  x, y, count)
+    #print('newtons method: ',  x, y, count)
     return xs, ys
 
 # uses Bk
