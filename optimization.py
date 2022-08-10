@@ -39,14 +39,15 @@ params = {
     }
 }
 
-def plot2d(f, xs, ys, animate=False):
-    x = np.linspace(-2, 2, 10000)
-    y = np.linspace(-1, 3, 10000)
+def plot2d(f, xs, ys, func_name, animate=False):
+    func_params = params[func_name]
+    x = np.linspace(func_params['x_min'], func_params['x_max'], 10000)
+    y = np.linspace(func_params['y_min'], func_params['y_max'], 10000)
     xv, yv = np.meshgrid(x, y)
     z = np.log10(f(xv, yv))
 
     fig, ax = plt.subplots()
-    ax.imshow(z, aspect='equal', origin='lower', extent = (-2, 2, -1, 3))
+    ax.imshow(z, aspect='equal', origin='lower', extent = (func_params['x_min'], func_params['x_max'], func_params['y_min'], func_params['y_max'],))
     ax.contour(xv, yv, z, colors = 'white', levels = 7, linewidths=0.5)
 
     if animate:
@@ -57,7 +58,7 @@ def plot2d(f, xs, ys, animate=False):
     else:
         ax.plot(xs, ys, 'rx--', linewidth=0.1)
 
-    return fig
+    plt.show()
 
 def plot3d(f, xs, ys, animate=False):
     x = np.linspace(-2, 2, 10000)
@@ -182,8 +183,54 @@ def newtons_method(f, x0=1.2, y0=1.2, beta=0.001, multiple_identity=False, flip_
 def bfgs():
     pass
 
+# used to approximate the function f (this is a quadratic function)
+def m(f, p, B, x, y):
+    return f(x, y) + np.array([[approx_deriv_x(f, x, y), approx_deriv_y(f, x, y)]]) @ p + 0.5 * p.T @ B @ p
+
+# uses standard cauchy point without modifications
+def cauchy_point(f, x0, y0, max_delta, delta, nu):
+    x = x0
+    y = y0
+    xs = [x0]
+    ys = [y0]
+    deltas = [delta]
+    g = np.zeros((2, 1))
+    while True:
+        g = np.array([[approx_deriv_x(f, x, y)], [approx_deriv_y(f, x, y)]])
+        norm_g = np.linalg.norm(g, 2)
+        H = approx_hessian(f, x, y)
+        curvature = g.T @ H @ g
+        if curvature <= 0:
+            tau = 1
+        else:
+            tau = min(1, norm_g**3/(delta * curvature))
+        p = -tau * delta * g / norm_g
+        rho = (f(x, y) - f(x + p[0], y + p[1])) / (m(f, np.zeros((2, 1)), H, x, y) - m(f, p, H, x, y))
+        p_norm = np.linalg.norm(p)
+        if rho < 0.25:
+            delta = 0.25 * delta
+        else:
+            if rho > 0.75 and p_norm == delta:
+                delta = min(2 * delta, max_delta)
+            else:
+                delta = delta
+        if rho > nu:
+            x += p[0][0]
+            y += p[1][0]
+            xs.append(x)
+            ys.append(y)
+            deltas.append(delta)
+
+        if p_norm < 0.00001:
+            break
+    return xs, ys, deltas
+
+def dog_leg():
+    pass
+
 if __name__ == '__main__':
-    xs, ys = steepest_descent(rosenbrock, x0=-1.2, y0=1)
-    plot2d(rosenbrock, xs, ys)
-    xs, ys = newtons_method(rosenbrock, x0=-1.2, y0=1)
-    plot3d(rosenbrock, xs, ys, animate=True)
+    #xs, ys = steepest_descent(rosenbrock, x0=-1.2, y0=1)
+    xs, ys = cauchy_point(parabaloid, x0=3, y0=3)
+    plot2d(parabaloid, xs, ys, 'Paraboloid')
+    #xs, ys = newtons_method(rosenbrock, x0=-1.2, y0=1)
+    #plot3d(rosenbrock, xs, ys, animate=True)

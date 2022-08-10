@@ -16,4 +16,4 @@ The derivatives of the functions are found using the finite difference method so
 
 ## Trust Region Methods
 
-Currently implementing the trust-region methods which are the cauchy and dog-leg.
+Implemented cauchy point where the step size and direction are chosen at the same time. There is a toggle to visualize the size of the trust region when looking at the graph. 
