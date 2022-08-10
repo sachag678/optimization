@@ -87,7 +87,7 @@ line_marker = dict(color='black', width=4)
 zs = f(np.array(xs), np.array(ys))
 if use_log:
     zs = np.log10(zs)
-fig.add_scatter3d(x=xs, y=ys, z=zs, mode='markers+lines', line=line_marker, marker=dict(size=4))
+fig.add_scatter3d(x=xs, y=ys, z=zs, mode='markers+lines', line=line_marker, marker=dict(size=4), showlegend=False)
 
 if method == 'Cauchy point' and show_trust_regions:
     t = np.linspace(0, 2 * np.pi, 1000)
@@ -95,6 +95,8 @@ if method == 'Cauchy point' and show_trust_regions:
         xr = xs[i] + deltas[i] * np.cos(t)
         yr = ys[i] + deltas[i] * np.sin(t)
         zr = f(xr, yr)
+        if use_log:
+            zr = np.log10(zr)
         fig.add_scatter3d(x=xr, y=yr, z=zr, mode='lines', line=dict(color='blue'), showlegend=False)
 
 st.plotly_chart(fig, use_container_width=True)
